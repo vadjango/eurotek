@@ -1,7 +1,7 @@
 from django.db import models
 from phonenumber_field import modelfields
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MaxValueValidator
 from django.http import Http404
 
@@ -20,15 +20,15 @@ class UserManager(BaseUserManager):
     def create_user(self, employee_id=None, first_name=None, last_name=None, phone_number=None, password=None,
                     **kwargs):
         if employee_id is None:
-            raise ValidationError(f"User must have an employee id!")
+            raise ValueError(f"User must have an employee id!")
         if first_name is None:
-            raise ValidationError(f"User must have a firstname!")
+            raise ValueError(f"User must have a firstname!")
         if last_name is None:
-            raise ValidationError(f"User must have a lastname!")
+            raise ValueError(f"User must have a lastname!")
         if phone_number is None:
-            raise ValidationError(f"User must have a phone number!")
+            raise ValueError(f"User must have a phone number!")
         if password is None:
-            raise ValidationError(f"User must have a password!")
+            raise ValueError(f"User must have a password!")
         user = self.model(employee_id=employee_id,
                           first_name=first_name,
                           last_name=last_name,
@@ -41,15 +41,15 @@ class UserManager(BaseUserManager):
     def create_superuser(self, employee_id=None, first_name=None, last_name=None, phone_number=None, password=None,
                          **kwargs):
         if employee_id is None:
-            raise ValidationError(f"Superuser must have an employee id!")
+            raise ValueError(f"Superuser must have an employee id!")
         if first_name is None:
-            raise ValidationError(f"Superuser must have a firstname!")
+            raise ValueError(f"Superuser must have a firstname!")
         if last_name is None:
-            raise ValidationError(f"Superuser must have a lastname!")
+            raise ValueError(f"Superuser must have a lastname!")
         if phone_number is None:
-            raise ValidationError(f"Superuser must have a phone number!")
+            raise ValueError(f"Superuser must have a phone number!")
         if password is None:
-            raise ValidationError(f"Superuser must have a password!")
+            raise ValueError(f"Superuser must have a password!")
         user = self.model(employee_id=employee_id,
                           first_name=first_name,
                           last_name=last_name,
@@ -62,7 +62,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    employee_id = models.IntegerField(primary_key=True, validators=[MaxValueValidator(99999)])
+    employee_id = models.IntegerField(unique=True, validators=[MaxValueValidator(99999)])
     avatar = models.ImageField(null=True, blank=True, upload_to=image_path)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=30)
@@ -79,3 +79,6 @@ class User(AbstractBaseUser):
     def __str__(self):
         return f"Employee_id: {self.employee_id}"
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"

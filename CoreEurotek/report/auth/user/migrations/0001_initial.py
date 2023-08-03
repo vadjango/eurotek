@@ -3,7 +3,7 @@
 import django.core.validators
 from django.db import migrations, models
 import phonenumber_field.modelfields
-import report.user.models
+import report
 
 
 class Migration(migrations.Migration):
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
                 ('employee_id', models.IntegerField(primary_key=True, serialize=False, validators=[django.core.validators.MaxValueValidator(99999)])),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to=report.user.models.image_path)),
+                ('avatar', models.ImageField(blank=True, null=True, upload_to=report.auth.user.models.image_path)),
                 ('first_name', models.CharField(max_length=20)),
                 ('last_name', models.CharField(max_length=30)),
                 ('phone_number', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None)),
