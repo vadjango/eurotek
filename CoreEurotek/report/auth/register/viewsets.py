@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from twilio.rest import Client
 import os
-from .serializers import UserSerializer
+from report.auth.user.serializers import UserSerializer
 
 
 class RegisterViewSet(viewsets.ModelViewSet):

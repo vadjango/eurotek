@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MaxValueValidator, validate_comma_separated_integer_list
+from django.core.validators import MaxLengthValidator, validate_comma_separated_integer_list
 import uuid
 
 
@@ -18,7 +18,7 @@ class DayReport(models.Model):
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    type_num = models.CharField(max_length=4, validators=[MaxValueValidator(10)])
+    type_num = models.CharField(max_length=4)
     operation_num = models.CharField(validators=[validate_comma_separated_integer_list])
     operation_name = models.CharField()
     total_number_of_pieces = models.IntegerField()
@@ -35,3 +35,4 @@ class DayReport(models.Model):
                 check=models.Q(shift__in=Shift.values)
             )
         ]
+
