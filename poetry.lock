@@ -356,6 +356,27 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-configurations"
+version = "2.4.1"
+description = "A helper for organizing Django settings."
+optional = false
+python-versions = ">=3.7, <4.0"
+files = [
+    {file = "django-configurations-2.4.1.tar.gz", hash = "sha256:a6c25c143834e67b20d34751512d08b3290684f25098ee212b1ee36804a59085"},
+    {file = "django_configurations-2.4.1-py3-none-any.whl", hash = "sha256:8bf8866ae29db89ecf93a7743450b5d8974073cf7c194fd98764fd16deac218d"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+
+[package.extras]
+cache = ["django-cache-url"]
+database = ["dj-database-url"]
+email = ["dj-email-url"]
+search = ["dj-search-url"]
+testing = ["dj-database-url", "dj-email-url", "dj-search-url", "django-cache-url (>=1.0.0)"]
+
+[[package]]
 name = "django-extensions"
 version = "3.2.3"
 description = "Extensions for Django"
@@ -1238,4 +1259,4 @@ requests = ">=2.7,<3.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "bad448e760b09a90988a9e3865f0cb37955dffb678efa1fc70ce643f4cb22fa4"
+content-hash = "7c609d37a1ea743c274f2a3563c8ed82b0cf22a167fc75eedc3bb7f1861cf5f2"

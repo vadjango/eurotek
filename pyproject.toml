@@ -18,6 +18,7 @@ django-extensions = "^3.2.3"
 ipython = "^8.14.0"
 djangorestframework-simplejwt = "^5.2.2"
 django-trench = "^0.3.1"
+django-configurations = "^2.4.1"
 
 
 [build-system]

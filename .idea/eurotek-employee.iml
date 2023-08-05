@@ -15,6 +15,15 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/CoreEurotek" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/CoreEurotek/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/codes/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/codes/migrations/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/login/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/register/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/user/__pycache__" />
+      <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/user/migrations/__pycache__" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11.4 WSL (Ubuntu): (/home/vadim/.cache/pypoetry/virtualenvs/eurotek-employee-gpAEcZ9--py3.11/bin/python3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

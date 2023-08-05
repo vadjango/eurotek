@@ -1,5 +1,6 @@
 from django.db import models
 from phonenumber_field import modelfields
+from phonenumber_field.validators import validate_international_phonenumber
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MaxValueValidator
