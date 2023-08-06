@@ -1,6 +1,9 @@
+import logging
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from report.auth.user.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,13 +17,5 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at", "edited_at"]
 
     def create(self, validated_data):
+        logger.info(f"Created user {validated_data['employee_id']} {validated_data['first_name']} {validated_data['last_name']}")
         return User.objects.create_user(**validated_data)
-
-    def to_representation(self, instance):
-        del instance["password"]
-        data = {"user": instance}
-        user = User.objects.get_object_by_employee_id(instance["employee_id"])
-        token = self.token_serializer.for_user(user)
-        data["refresh"] = str(token)
-        data["access"] = str(token.access_token)
-        return data

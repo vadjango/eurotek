@@ -26,7 +26,7 @@ class RegisterViewSet(viewsets.ModelViewSet):
                 .verification_checks \
                 .create(to=verified_number, code=otp_code)
         except TwilioRestException:
-            return Response(data={"error": "Cannot validate this number. Check if you didn't change a number!"},
+            return Response(data={"error": "Cannot validate this number."},
                             status=status.HTTP_400_BAD_REQUEST)
         if verification_check.status != "approved":
             raise ValueError("Verification code is not valid")

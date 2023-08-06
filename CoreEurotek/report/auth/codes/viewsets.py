@@ -34,7 +34,7 @@ class LoginVerificationView(APIView):
                 .verification_checks \
                 .create(to=phone_number, code=otp_code)
         except TwilioRestException:
-            return Response(data={"error": "Cannot validate this number. Check if you didn't change a number!"},
+            return Response(data={"error": "Cannot validate this number."},
                             status=status.HTTP_400_BAD_REQUEST)
         if verification_check.status != "approved":
             return Response({"error": "Code is expired or isn't valid!"}, status=status.HTTP_400_BAD_REQUEST)

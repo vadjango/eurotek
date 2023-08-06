@@ -139,9 +139,28 @@ class Dev(Configuration):
         ),
     }
 
-    # SIMPLE_JWT = {
-    #     "TOKEN_OBTAIN_SERIALIZER": "report.auth.login.serializers.LoginTokenSerializer"
-    # }
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "report_formatter": {
+                "format": "{levelname} {asctime} {module} {process} {thread} {message}",
+                "style": "{",
+                "datefmt": "%d.%m.%Y"
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "report_formatter",
+                "stream": "ext://sys.stdout"
+            }
+        },
+        "root": {
+            "handlers": ["console"],
+            "level": "DEBUG"
+        }
+    }
 
     TRENCH_AUTH = {
         'MFA_METHODS': {
