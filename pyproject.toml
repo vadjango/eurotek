@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["vadjango <z9661744@gmail.com>"]
 readme = "README.md"
-packages = [{include = "eurotek_employee"}]
+packages = [{ include = "eurotek_employee" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -19,7 +19,7 @@ ipython = "^8.14.0"
 djangorestframework-simplejwt = "^5.2.2"
 django-trench = "^0.3.1"
 django-configurations = "^2.4.1"
-
+pytest-django = "^4.5.2"
 
 [build-system]
 requires = ["poetry-core"]

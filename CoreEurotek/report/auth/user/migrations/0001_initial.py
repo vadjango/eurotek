@@ -17,9 +17,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('employee_id', models.IntegerField(primary_key=True, serialize=False, validators=[django.core.validators.MaxValueValidator(99999)])),
+                ('employee_id', models.IntegerField(unique=True, serialize=False, validators=[django.core.validators.MaxValueValidator(99999)])),
                 ('avatar', models.ImageField(blank=True, null=True, upload_to=report.auth.user.models.image_path)),
                 ('first_name', models.CharField(max_length=20)),
                 ('last_name', models.CharField(max_length=30)),

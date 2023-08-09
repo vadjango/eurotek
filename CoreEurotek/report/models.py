@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MaxLengthValidator, validate_comma_separated_integer_list
+from django.core.validators import validate_comma_separated_integer_list
 import uuid
 
 
@@ -35,4 +35,5 @@ class DayReport(models.Model):
                 check=models.Q(shift__in=Shift.values)
             )
         ]
+        ordering = ["-date", "-start_time", "-end_time"]
 
