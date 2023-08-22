@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from twilio.rest import Client
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import RegisterSerializer
 
 
 class RegisterViewSet(viewsets.ModelViewSet):
@@ -16,20 +16,20 @@ class RegisterViewSet(viewsets.ModelViewSet):
     verify_sid = os.environ.get("TWILIO_VERIFY_SID")
 
     def create(self, request, *args, **kwargs):
-        otp_code = request.data["otp_code"]
-        verified_number = request.data["phone_number"]
+        verified_number = request.data.get("phone_number")
+        otp_code = request.data.get("otp_code")
         reg_serializer = self.get_serializer(data=request.data)
         reg_serializer.is_valid(raise_exception=True)
-        # client = Client()
-        # try:
-        #     verification_check = client.verify.v2.services(self.verify_sid) \
-        #         .verification_checks \
-        #         .create(to=verified_number, code=otp_code)
-        # except TwilioRestException:
-        #     return Response(data={"error": "Cannot validate this number."},
-        #                     status=status.HTTP_400_BAD_REQUEST)
-        # if verification_check.status != "approved":
-        #     raise ValueError("Verification code is not valid")
+        client = Client()
+        try:
+            verification_check = client.verify.v2.services(self.verify_sid) \
+                .verification_checks \
+                .create(to=verified_number, code=otp_code)
+        except TwilioRestException as e:
+            return Response(data={"error": str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if verification_check.status != "approved":
+            return Response({"error": "Verification code is not valid!"}, status=status.HTTP_400_BAD_REQUEST)
         user = reg_serializer.save()
         refresh = self.token_class.for_user(user)
         data = {

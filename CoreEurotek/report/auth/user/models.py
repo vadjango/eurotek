@@ -1,14 +1,13 @@
 from django.db import models
 from phonenumber_field import modelfields
-from phonenumber_field.validators import validate_international_phonenumber
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MaxValueValidator
 from django.http import Http404
 
 
 def image_path(instance, filename):
-    return f"{instance.user.employee_id}/{filename}"
+    return f"{instance.employee_id}/{filename}"
 
 
 class UserManager(BaseUserManager):
@@ -18,18 +17,23 @@ class UserManager(BaseUserManager):
         except (ValueError, TypeError, ObjectDoesNotExist):
             raise Http404
 
-    def create_user(self, employee_id=None, first_name=None, last_name=None, phone_number=None, password=None,
-                    **kwargs):
+    @staticmethod
+    def _check_necessary_fields(employee_id=None, first_name=None, last_name=None, phone_number=None,
+                                password=None):
         if employee_id is None:
             raise ValueError(f"User must have an employee id!")
+        if password is None:
+            raise ValueError(f"User must have a password!")
         if first_name is None:
             raise ValueError(f"User must have a firstname!")
         if last_name is None:
             raise ValueError(f"User must have a lastname!")
         if phone_number is None:
             raise ValueError(f"User must have a phone number!")
-        if password is None:
-            raise ValueError(f"User must have a password!")
+
+    def create_user(self, employee_id=None, first_name=None, last_name=None, phone_number=None, password=None,
+                    **kwargs):
+        self._check_necessary_fields(employee_id, first_name, last_name, phone_number, password)
         user = self.model(employee_id=employee_id,
                           first_name=first_name,
                           last_name=last_name,
@@ -39,18 +43,22 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_manager(self, employee_id=None, first_name=None, last_name=None, phone_number=None, password=None,
+                       **kwargs):
+        self._check_necessary_fields(employee_id, first_name, last_name, phone_number, password)
+        user = self.model(employee_id=employee_id,
+                          first_name=first_name,
+                          last_name=last_name,
+                          phone_number=phone_number,
+                          **kwargs)
+        user.is_manager = True
+        user.set_password(raw_password=password)
+        user.save(using=self._db)
+        return user
+
     def create_superuser(self, employee_id=None, first_name=None, last_name=None, phone_number=None, password=None,
                          **kwargs):
-        if employee_id is None:
-            raise ValueError(f"Superuser must have an employee id!")
-        if first_name is None:
-            raise ValueError(f"Superuser must have a firstname!")
-        if last_name is None:
-            raise ValueError(f"Superuser must have a lastname!")
-        if phone_number is None:
-            raise ValueError(f"Superuser must have a phone number!")
-        if password is None:
-            raise ValueError(f"Superuser must have a password!")
+        self._check_necessary_fields(employee_id, first_name, last_name, phone_number, password)
         user = self.model(employee_id=employee_id,
                           first_name=first_name,
                           last_name=last_name,
@@ -62,14 +70,15 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     employee_id = models.IntegerField(unique=True, validators=[MaxValueValidator(99999)])
     avatar = models.ImageField(null=True, blank=True, upload_to=image_path)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=30)
     phone_number = modelfields.PhoneNumberField()
     is_active = models.BooleanField(default=True)
-    is_superuser = models.BooleanField(default=False)
+    is_manager = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     edited_at = models.DateTimeField(auto_now=True)
 
