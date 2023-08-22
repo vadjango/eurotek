@@ -20,6 +20,9 @@ djangorestframework-simplejwt = "^5.2.2"
 django-trench = "^0.3.1"
 django-configurations = "^2.4.1"
 pytest-django = "^4.5.2"
+drf-nested-routers = "^0.93.4"
+channels = {extras = ["daphne"], version = "^4.0.0"}
+channels-redis = "^4.1.0"
 
 [build-system]
 requires = ["poetry-core"]

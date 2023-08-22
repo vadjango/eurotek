@@ -1,3 +1,9 @@
 from django.contrib import admin
+from .models import DayReport
 
-# Register your models here.
+
+class DayReportAdmin(admin.ModelAdmin):
+    list_display = ("employee", "shift", "start_date")
+
+
+admin.site.register(DayReport, DayReportAdmin)

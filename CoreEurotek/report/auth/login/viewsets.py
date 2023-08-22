@@ -1,7 +1,10 @@
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from twilio.base.exceptions import TwilioRestException
+
 from report.auth.user.serializers import UserSerializer
 import os
 from twilio.rest import Client
@@ -25,5 +28,6 @@ class LoginView(TokenObtainPairView):
         # verification = client.verify.v2.services(self.verify_sid) \
         #     .verifications \
         #     .create(to=phone_number.as_e164, channel="sms")
-        # return Response(data={"status": verification.status}, status=status.HTTP_200_OK)
+        # print(verification.status)
         return Response(data=serializer.validated_data, status=status.HTTP_200_OK)
+

@@ -8,4 +8,5 @@ class TestRegistration:
     def test_post_registration(self, client, user, day_report):
         response = client.post(self.endpoint, data={
             # TODO: test registration
+            #  macafuck
         })

@@ -12,9 +12,9 @@ def day_report(db, user) -> DayReport:
     report_data = {
         "employee": user,
         "shift": "night",
-        "date": dt_tm,
-        "start_time": start_time,
-        "end_time": end_time,
+        "date": dt_tm.strftime("%Y-%m-%d"),
+        "start_time": start_time.strftime("%H:%M:%S"),
+        "end_time": end_time.strftime("%H:%M:%S"),
         "type_num": "015",
         "operation_num": "125",
         "operation_name": "Some operation",

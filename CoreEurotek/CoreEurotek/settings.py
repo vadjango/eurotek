@@ -35,6 +35,7 @@ class Dev(Configuration):
     # Application definition
 
     INSTALLED_APPS = [
+        'daphne',
         'django.contrib.admin',
         'django.contrib.auth',
         'django.contrib.contenttypes',
@@ -46,7 +47,8 @@ class Dev(Configuration):
         'report',
         'report.auth.user',
         'report.auth',
-        'report.auth.codes'
+        'report.auth.codes',
+        'report.notifications'
     ]
 
     MIDDLEWARE = [
@@ -126,6 +128,8 @@ class Dev(Configuration):
     # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
     STATIC_URL = 'static/'
+    MEDIA_ROOT = "media/"
+    MEDIA_URL = "media/"
 
     # Default primary key field type
     # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -180,6 +184,16 @@ class Dev(Configuration):
     SIMPLE_JWT = {
         "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
         "REFRESH_TOKEN_LIFETIME": timedelta(weeks=100)
+    }
+    ASGI_APPLICATION = "CoreEurotek.asgi.application"
+
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("127.0.0.1", 6379)],
+            },
+        },
     }
 
 
