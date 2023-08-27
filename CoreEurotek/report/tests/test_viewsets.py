@@ -10,16 +10,16 @@ class TestDayReport:
     def test_get_reports(self, client, user, day_report):
         client.force_authenticate(user=user)
         response = client.get(self.api_endpoint)
-        assert response.status_code == status.HTTP_301_MOVED_PERMANENTLY  # TODO: analyze this
+        assert response.status_code == status.HTTP_200_OK
         assert response.data["count"] == 1
 
     def test_get_current_user_report(self, client, user, day_report):
         client.force_authenticate(user=user)
-        response = client.get(self.api_endpoint + f"{day_report.public_uuid.hex}/")
+        response = client.get(self.api_endpoint + f"{day_report.public_id.hex}/")
         assert response.status_code == status.HTTP_200_OK
         assert response.data["employee"] == day_report.employee.pk
         assert response.data["shift"] == day_report.shift
-        assert response.data["date"] == day_report.date
+        assert response.data["start_date"] == day_report.start_date
         assert response.data["start_time"] == day_report.start_time
         assert response.data["end_time"] == day_report.end_time
         assert response.data["type_num"] == day_report.type_num
@@ -31,16 +31,16 @@ class TestDayReport:
 
     def test_get_another_user_report(self, client, additional_user, day_report):
         client.force_authenticate(user=additional_user)
-        response = client.get(self.api_endpoint + f"{day_report.public_uuid.hex}/")
+        response = client.get(self.api_endpoint + f"{day_report.public_id.hex}/")
         assert response.status_code == 404
 
     def test_get_user_report_by_manager(self, client, manager, day_report):
         client.force_authenticate(user=manager)
-        response = client.get(self.api_endpoint + f"{day_report.public_uuid.hex}/")
+        response = client.get(self.api_endpoint + f"{day_report.public_id.hex}/")
         assert response.status_code == status.HTTP_200_OK
         assert response.data["employee"] == day_report.employee.pk
         assert response.data["shift"] == day_report.shift
-        assert response.data["date"] == day_report.date
+        assert response.data["start_date"] == day_report.start_date
         assert response.data["start_time"] == day_report.start_time
         assert response.data["end_time"] == day_report.end_time
         assert response.data["type_num"] == day_report.type_num
@@ -56,7 +56,7 @@ class TestDayReport:
         end_time = dt_tm.time()
         report_data = {
             "shift": "afternoon",
-            "date": dt_tm.strftime("%Y-%m-%d"),
+            "start_date": dt_tm.strftime("%Y-%m-%d"),
             "start_time": start_time.strftime("%H:%M:%S"),
             "end_time": end_time.strftime("%H:%M:%S"),
             "type_num": "015",
@@ -68,10 +68,11 @@ class TestDayReport:
         }
         client.force_authenticate(user=user)
         response = client.post(self.api_endpoint,
-                               data=report_data)
+                               data=report_data,
+                               format="json")
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["shift"] == report_data["shift"]
-        assert response.data["date"] == report_data["date"]
+        assert response.data["start_date"] == report_data["start_date"]
         assert response.data["start_time"] == report_data["start_time"]
         assert response.data["end_time"] == report_data["end_time"]
         assert response.data["type_num"] == report_data["type_num"]
@@ -88,7 +89,7 @@ class TestDayReport:
             "start_time": "21:00:00",
             "end_time": "10:00:00"
         }
-        response = client.patch(self.api_endpoint + f"{day_report.public_uuid.hex}/", update_data)
+        response = client.patch(self.api_endpoint + f"{day_report.public_id.hex}/", update_data, format="json")
         assert response.status_code == status.HTTP_200_OK
         assert response.data["shift"] == update_data["shift"]
         assert response.data["start_time"] == update_data["start_time"]
@@ -101,7 +102,7 @@ class TestDayReport:
             "start_time": "21:00:00",
             "end_time": "10:00:00"
         }
-        response = client.patch(self.api_endpoint + f"{day_report.public_uuid.hex}/", update_data)
+        response = client.patch(self.api_endpoint + f"{day_report.public_id.hex}/", update_data, format="json")
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_patch_report_by_manager(self, client, manager, day_report):
@@ -111,14 +112,14 @@ class TestDayReport:
             "start_time": "21:00:00",
             "end_time": "10:00:00"
         }
-        response = client.patch(self.api_endpoint + f"{day_report.public_uuid.hex}/", update_data)
+        response = client.patch(self.api_endpoint + f"{day_report.public_id.hex}/", update_data, format="json")
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_put_report_by_current_user(self, client, user, day_report):
         client.force_authenticate(user=user)
         update_data = {
             "shift": "night",
-            "date": "2023-08-11",
+            "start_date": "2023-08-11",
             "start_time": "21:00:00",
             "end_time": "10:00:00",
             "type_num": "015",
@@ -128,9 +129,10 @@ class TestDayReport:
             "min_norm": 500,
             "total_hours": 11.5
         }
-        response = client.put(self.api_endpoint + f"{day_report.public_uuid.hex}/", update_data)
+        response = client.put(self.api_endpoint + f"{day_report.public_id.hex}/", update_data, format="json")
         assert response.status_code == status.HTTP_200_OK
         assert response.data["shift"] == update_data["shift"]
+        assert response.data["start_date"] == update_data["start_date"]
         assert response.data["start_time"] == update_data["start_time"]
         assert response.data["end_time"] == update_data["end_time"]
         assert response.data["type_num"] == update_data["type_num"]
@@ -154,14 +156,14 @@ class TestDayReport:
             "min_norm": 500,
             "total_hours": 11.5
         }
-        response = client.put(self.api_endpoint + f"{day_report.public_uuid.hex}/", update_data)
+        response = client.put(self.api_endpoint + f"{day_report.public_id.hex}/", update_data, format="json")
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_put_report_by_manager(self, client, manager, day_report):
         client.force_authenticate(user=manager)
         update_data = {
             "shift": "night",
-            "date": "2023-08-11",
+            "start_date": "2023-08-11",
             "start_time": "21:00:00",
             "end_time": "10:00:00",
             "type_num": "015",
@@ -171,10 +173,10 @@ class TestDayReport:
             "min_norm": 500,
             "total_hours": 11.5
         }
-        response = client.put(self.api_endpoint + f"{day_report.public_uuid.hex}/", update_data)
+        response = client.put(self.api_endpoint + f"{day_report.public_id.hex}/", update_data, format="json")
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_delete(self, client, user, day_report):
         client.force_authenticate(user=user)
-        response = client.delete(self.api_endpoint + f"{day_report.public_uuid.hex}/")
+        response = client.delete(self.api_endpoint + f"{day_report.public_id.hex}/")
         assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED

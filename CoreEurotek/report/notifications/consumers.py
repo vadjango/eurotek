@@ -1,10 +1,12 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-import json
+import logging
 from channels.db import database_sync_to_async
 from rest_framework.utils.serializer_helpers import ReturnList
 
 from report.notifications.models import Comment
 from report.notifications.serializers import CommentSerializer
+
+logger = logging.getLogger(__name__)
 
 
 @database_sync_to_async
@@ -18,16 +20,21 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
     groups = ["general"]  # TODO: read about it
 
     async def connect(self):
+        await self.accept()
         user_id = self.scope["user"]
+        print(f"User_id: {user_id}")
         await self.channel_layer.group_add(f"{user_id}--client", self.channel_name)
         comments = await aget_serialized_unread_comments_for_user(employee_id=user_id)
-        await self.channel_layer.send(self.channel_name, {
-            "type": "notification.message",
-            "data": comments
-        })
-        await self.accept()
+        for comm in comments:
+            await self.channel_layer.send(self.channel_name, {
+                "type": "notification.message",
+                "info": f"The comment was created for the report {comm['day_report']['start_date']}",
+                "link": f"http://127.0.0.1:8000/api/v1/report/{comm['day_report']['public_id']}/comment/{comm['public_id']}/"
+            })
 
     async def notification_message(self, event):
-        await self.send_json(content={
-            "data": event["data"]
-        })
+        logger.warning("Message was sented!")
+        data = {"info": event["info"]}
+        if event.get("link"):
+            data["link"] = event["link"]
+        await self.send_json(content=data)

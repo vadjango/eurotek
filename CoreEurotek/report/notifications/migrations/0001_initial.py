@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
+
     dependencies = [
         ('report', '0003_alter_dayreport_options_and_more'),
     ]
@@ -23,7 +24,9 @@ class Migration(migrations.Migration):
                 ('edited_at', models.DateTimeField(auto_now=True)),
                 ('body', models.CharField(max_length=500)),
                 ('is_read', models.BooleanField(default=False)),
-                ('day_report', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='report.dayreport')),
+                ('day_report', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                 to='report.dayreport',
+                                                 to_field="public_id")),
             ],
             options={
                 'abstract': False,

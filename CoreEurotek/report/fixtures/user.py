@@ -6,7 +6,7 @@ user_data = {
     "first_name": "David",
     "last_name": "Backhem",
     "password": "azxcA231&asd",
-    "phone_number": "+380506442518",
+    "phone_number": "+380506442518"
 }
 
 additional_user_data = {
@@ -23,6 +23,7 @@ manager_data = {
     "last_name": "Sickach",
     "password": "azxcA231&asd",
     "phone_number": "+380501252518",
+    "is_manager": True
 }
 
 

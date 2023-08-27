@@ -17,15 +17,13 @@ class CommentUserPermission(IsAuthenticated):
     """
     Permission which should be used in CommentViewSet
     """
-    def has_object_permission(self, request, view, obj):
+
+    def has_permission(self, request, view):
+        if not super().has_permission(request, view):
+            return False
         if request.user.is_manager:
             return True
         last_path = str(request).split("/")[-2]
         if last_path in ["read"] and request.method in ["POST"]:
             return True
         return request.method in SAFE_METHODS
-
-    def has_permission(self, request, view):
-        if request.user.is_manager:
-            return True
-        return False
