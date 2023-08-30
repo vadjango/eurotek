@@ -1,21 +1,15 @@
 import React from "react"
-import { View, Image, StyleSheet } from "react-native"
+import { Platform, KeyboardAvoidingView, StyleSheet, View } from "react-native"
 import RegistrationForm from "../components/RegistrationForm"
 
 const Registration = () => {
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView 
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            style={{flex: 1}}
+        >
             <RegistrationForm />
-        </View>
+        </KeyboardAvoidingView >
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "space-around",
-        alignItems: "center",
-        backgroundColor: "#003867"
-    }
-})
 export default Registration

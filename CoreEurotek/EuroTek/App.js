@@ -1,15 +1,22 @@
 import React from "react"
-import { SafeAreaView, StyleSheet, StatusBar } from "react-native"
-// import Registration from "./src/screens/Registration"
-import Report from "./src/experiments/Report"
- 
+import { SafeAreaView, View, StyleSheet, StatusBar, useWindowDimensions, Platform } from "react-native"
+import RegistrationForm from "./src/components/Registration/PageTwo"
+import { useFonts } from "expo-font"
+// import ReportPage from "./src/experiments/ReportPage"
+
 
 const App = () => {  
 
+  const [loaded] = useFonts({
+    Poppins: require("./assets/fonts/Poppins-Regular.ttf"),
+  })
+
+  if (!loaded) return null;
+
   return (
       <SafeAreaView style={styles.container}>
-        {/* <Registration /> */}
-        <Report />
+        <StatusBar backgroundColor={"#003867"} />
+        <RegistrationForm />
       </SafeAreaView>
   )
 }
@@ -17,8 +24,8 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "darkblue",
-    paddingTop: StatusBar.currentHeight,
+    backgroundColor: "#003867",
+    paddingTop: StatusBar.currentHeight || 0,
   }
 })
 

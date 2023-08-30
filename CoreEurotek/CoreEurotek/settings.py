@@ -30,12 +30,20 @@ class Dev(Configuration):
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
-    ALLOWED_HOSTS = ["localhost", "0.0.0.0", "192.168.1.246", "127.0.0.1"]
+    ALLOWED_HOSTS = ["localhost", "0.0.0.0", "192.168.1.246", "127.0.0.1", "10.0.2.2"]
 
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://10.0.2.2:8000"
+    ]
+
+    # CORS_ALLOW_ALL_ORIGINS = True
     # Application definition
 
     INSTALLED_APPS = [
         'daphne',
+        'corsheaders',
         'django.contrib.admin',
         'django.contrib.auth',
         'django.contrib.contenttypes',
@@ -53,6 +61,7 @@ class Dev(Configuration):
 
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
