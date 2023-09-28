@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 import string
 from datetime import timedelta
 from pathlib import Path
@@ -30,13 +31,9 @@ class Dev(Configuration):
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
-    ALLOWED_HOSTS = ["localhost", "0.0.0.0", "192.168.1.246", "127.0.0.1", "10.0.2.2"]
+    ALLOWED_HOSTS = ["*"]
 
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "http://10.0.2.2:8000"
-    ]
+    CORS_ALLOW_ALL_ORIGINS = True
 
     # CORS_ALLOW_ALL_ORIGINS = True
     # Application definition
@@ -55,8 +52,8 @@ class Dev(Configuration):
         'report',
         'report.auth.user',
         'report.auth',
-        'report.auth.codes',
-        'report.notifications'
+        'report.comment',
+        'notifications'
     ]
 
     MIDDLEWARE = [
@@ -98,8 +95,8 @@ class Dev(Configuration):
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'USER': 'postgres',
             'NAME': 'eurotek',
-            'PASSWORD': 'iSrhowP8v2VAVZAJbvNC',
-            'HOST': 'winhost',
+            'PASSWORD': os.environ.get('POSTGRESQL_PASSWORD'),
+            'HOST': 'localhost',
             'PORT': 5432
         }
     }
@@ -146,7 +143,6 @@ class Dev(Configuration):
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
     AUTH_USER_MODEL = "report_user.User"
-
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
             'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -192,7 +188,8 @@ class Dev(Configuration):
 
     SIMPLE_JWT = {
         "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
-        "REFRESH_TOKEN_LIFETIME": timedelta(weeks=100)
+        "REFRESH_TOKEN_LIFETIME": timedelta(weeks=100),
+        "TOKEN_OBTAIN_SERIALIZER": "report.auth.login.serializers.AuthTokenSerializer"
     }
     ASGI_APPLICATION = "CoreEurotek.asgi.application"
 
@@ -209,3 +206,5 @@ class Dev(Configuration):
 class Prod(Dev):
     DATABASES = {}
     DEBUG = False
+
+    CORS_ALLOW_ALL_ORIGINS = False

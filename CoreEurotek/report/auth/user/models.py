@@ -2,8 +2,10 @@ from django.db import models
 from phonenumber_field import modelfields
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, RegexValidator
 from django.http import Http404
+
+AlphaValidator = RegexValidator(r'^[a-zA-ZÁáČčĎďÉéĚěÍíŇňÓóŘřŠšŤťÚúŮůÝýŽž]*$')
 
 
 def image_path(instance, filename):
@@ -51,8 +53,8 @@ class UserManager(BaseUserManager):
                           last_name=last_name,
                           phone_number=phone_number,
                           **kwargs)
-        user.is_manager = True
         user.set_password(raw_password=password)
+        user.is_manager = True
         user.save(using=self._db)
         return user
 
@@ -73,8 +75,8 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     employee_id = models.IntegerField(unique=True, validators=[MaxValueValidator(99999)])
     avatar = models.ImageField(null=True, blank=True, upload_to=image_path)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=30)
+    first_name = models.CharField(max_length=20, validators=[AlphaValidator])
+    last_name = models.CharField(max_length=30, validators=[AlphaValidator])
     phone_number = modelfields.PhoneNumberField()
     is_active = models.BooleanField(default=True)
     is_manager = models.BooleanField(default=False)

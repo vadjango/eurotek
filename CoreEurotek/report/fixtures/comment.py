@@ -1,7 +1,7 @@
 import pytest
 from report.fixtures.user import user
 from report.fixtures.day_report import day_report
-from report.notifications.models import Comment
+from report.comment.models import Comment
 
 
 @pytest.fixture

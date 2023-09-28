@@ -25,7 +25,7 @@
       <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/user/__pycache__" />
       <excludeFolder url="file://$MODULE_DIR$/CoreEurotek/report/auth/user/migrations/__pycache__" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.11.5 WSL (Ubuntu): (/root/.cache/pypoetry/virtualenvs/eurotek-employee-gpAEcZ9--py3.11/bin/python3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Poetry (eurotek-employee)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">

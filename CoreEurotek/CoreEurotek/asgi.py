@@ -11,8 +11,8 @@ import os
 
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
-from report.notifications.middlewares import WebSocketNotificationMiddleware
-from report import routers
+from report.comment.middlewares import WebSocketNotificationMiddleware
+from report import urls
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'CoreEurotek.settings')
 
@@ -21,6 +21,6 @@ django_asgi_application = get_asgi_application()
 application = ProtocolTypeRouter(
     {
         "http": django_asgi_application,
-        "websocket": WebSocketNotificationMiddleware(URLRouter(routers.websocket_patterns))
+        "websocket": WebSocketNotificationMiddleware(URLRouter(urls.websocket_patterns))
     }
 )
