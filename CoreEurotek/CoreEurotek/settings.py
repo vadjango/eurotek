@@ -189,7 +189,8 @@ class Dev(Configuration):
     SIMPLE_JWT = {
         "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
         "REFRESH_TOKEN_LIFETIME": timedelta(weeks=100),
-        "TOKEN_OBTAIN_SERIALIZER": "report.auth.login.serializers.AuthTokenSerializer"
+        "TOKEN_OBTAIN_SERIALIZER": "report.auth.login.serializers.AuthTokenSerializer",
+        "USER_ID_FIELD": "employee_id"
     }
     ASGI_APPLICATION = "CoreEurotek.asgi.application"
 

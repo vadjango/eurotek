@@ -13,12 +13,6 @@ class AuthTokenSerializer(TokenObtainSerializer):
         super().__init__(*args, **kwargs)
         self.fields[self.username_field] = serializers.IntegerField()
 
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token["user_id"] = user.employee_id
-        return token
-
     def validate(self, attrs):
         data = super().validate(attrs)
 

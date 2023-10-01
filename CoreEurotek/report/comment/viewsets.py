@@ -38,27 +38,10 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        self._send_notification({
-            "to": serializer.data["day_report"]["employee"],
-            "info": f"The comment was created for the report {serializer.data['day_report']['start_date']}",
-            "link": f"http://127.0.0.1:8000/api/v1/report/{serializer.data['day_report']['public_id']}/comment/{serializer.data['public_id']}/"
-        })
         headers = self.get_success_headers(serializer.data)
         return Response(data=serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        self._send_notification({
-            "to": instance.day_report.employee_id,
-            "info": f"The comment for the report {instance.day_report.start_date} was deleted"
-        })
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def _send_notification(self, data):
-        async_to_sync(self.channel_layer.group_send)(f'{data["to"]}--client', {
-            "type": "notification.message",
-            "info": data.get("info"),
-            "link": data.get("link")
-        })
-

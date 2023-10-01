@@ -6,10 +6,8 @@ class ReportUserPermission(IsAuthenticated):
     Permission which should be used in ReportViewSet
     """
     def has_object_permission(self, request, view, obj):
-        if request.user == obj.employee:
+        if request.user == obj.employee or request.user.is_manager:
             return True
-        if request.user.is_manager:
-            return request.method in SAFE_METHODS
         return False
 
 
