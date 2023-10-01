@@ -3,24 +3,28 @@ from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
+from report.auth.user.serializers import UserSerializer
 
 
-class AbstractTokenSerializer(TokenObtainSerializer):
+class AuthTokenSerializer(TokenObtainSerializer):
+    token_class = RefreshToken
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields[self.username_field] = serializers.IntegerField()
 
-
-class AuthTokenSerializer(AbstractTokenSerializer):
-    token_class = RefreshToken
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token["user_id"] = user.employee_id
+        return token
 
     def validate(self, attrs):
         data = super().validate(attrs)
 
         refresh = self.get_token(self.user)
 
-        data["user"] = self.user
+        data["user"] = UserSerializer(self.user).data
         data["refresh"] = str(refresh)
         data["access"] = str(refresh.access_token)
 

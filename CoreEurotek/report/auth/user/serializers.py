@@ -1,10 +1,10 @@
 import logging
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from report.auth.user.models import User
 
 logger = logging.getLogger(__name__)
-
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,5 +14,4 @@ class UserSerializer(serializers.ModelSerializer):
                   "edited_at"]
         read_only_fields = ["id", "created_at", "edited_at"]
 
-    def to_representation(self, instance):
-        return super().to_representation(instance)
+

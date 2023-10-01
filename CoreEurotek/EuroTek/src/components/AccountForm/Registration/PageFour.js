@@ -21,6 +21,7 @@ const PageFour = ({ route, navigation }) => {
         })
         .then((response) => {
             storage.set("auth", JSON.stringify(response.data));
+            navigation.navigate("UserCabinet")
             console.log(JSON.parse(storage.getString("auth")))
         })
         .catch((e) => {

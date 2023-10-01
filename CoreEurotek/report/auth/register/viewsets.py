@@ -29,7 +29,6 @@ class RegisterViewSet(viewsets.ModelViewSet):
             return Response(data=errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_200_OK)
 
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -53,7 +52,7 @@ class RegisterViewSet(viewsets.ModelViewSet):
         refresh = self.token_class.for_user(user)
         data = {
             "access": str(refresh.access_token),
-            "refresh": str(refresh)
+            "refresh": str(refresh),
+            "user": serializer.data
         }
         return Response(data=data, status=status.HTTP_201_CREATED)
-

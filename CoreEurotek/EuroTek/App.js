@@ -12,19 +12,26 @@ import LoginForm from "./src/screens/Login"
 
 const Stack = createNativeStackNavigator();
 
+const Pages = {
+  REGISTRATION: "Registration",
+  LOGIN: "Login",
+  USER_CABINET: "UserCabinet"
+}
+
 
 function App() {  
-  console.log(storage.getString("auth"));
   const [fontsLoaded] = useFonts({
     Poppins: require("./assets/fonts/Poppins-Regular.ttf"),
   });
 
-  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [refreshed, setRefreshed] = useState(false);
+  const [initPageName, setInitPageName] = useState("");
 
   useEffect(() => {
-    // if (!fontsLoaded) return;
+    if (!storage.getString("auth")) {
+      setInitPageName(Pages.REGISTRATION);
+    }
     const authData = JSON.parse(storage.getString("auth"));
     axios.get(AppBaseURL + "report/", {
         headers: {
@@ -34,11 +41,11 @@ function App() {
     .then((response) => {
         // console.log(response.data);
         // setReports(response.data);
-        setLoaded(true);
+        setInitPageName(Pages.USER_CABINET);
     })
     .catch((e) => {
         // if status is 401, it means our access token is expired. Trying to get another one.
-        if (e.response.status == 401) {
+        if (e.response.status == 401 && e.response.data["code"] === "token_not_valid") {
             axios.post(AppBaseURL + "auth/refresh/", {
                 "refresh": authData.refresh
             })
@@ -48,35 +55,29 @@ function App() {
                 setRefreshed(true);
             })
             .catch((e) => {
-                setError(e);
-                setLoaded(true);
+                setInitPageName(Pages.LOGIN)
             })
         } else {
             setError(e);
         }
     })
-}, [refreshed, fontsLoaded])
+  }, [refreshed])
 
-if (!loaded) return null;
-
-function isTokenValid() {
-  if (error) {
-    if (error.response.data["code"] === "token_not_valid") {
-      return false
-    }
+  if (!fontsLoaded) {
+    return null
   }
-  return true
-}
+
+  console.log("Page has been rendered, wow!");
 
 
   return (
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={"#003867"} />
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName={(isTokenValid()) ? "UserCabinet" : "Login"}>
-            <Stack.Screen component={RegistrationForm} name="Registration" />
-            <Stack.Screen component={LoginForm} name="Login" />
-            <Stack.Screen component={UserCabinet} name="UserCabinet" />
+          <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName={initPageName}>
+            <Stack.Screen component={RegistrationForm} name={Pages.REGISTRATION} />
+            <Stack.Screen component={LoginForm} name={Pages.LOGIN} />
+            <Stack.Screen component={UserCabinet} name={Pages.USER_CABINET} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>

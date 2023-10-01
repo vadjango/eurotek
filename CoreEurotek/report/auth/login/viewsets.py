@@ -37,7 +37,6 @@ class LoginView(TokenObtainPairView):
         #     .create(to=serializer.validated_data["user"].phone_number.as_e164, code=request.data["otp_code"])
         # if verification_check.status != "approved":
         #     return Response(data={"error": _("Otp code is invalid!")}, status=status.HTTP_400_BAD_REQUEST)
-        del serializer.validated_data["user"]
         if request.data["otp_code"] != request.session["otp_code"]:
             return Response(data={"error": "Fuckoff"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(data=serializer.validated_data, status=status.HTTP_200_OK)
